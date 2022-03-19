@@ -23,7 +23,7 @@ export const knownBinaryOpMap: KnownBinaryOpMap = {
 	greaterThan: (a, b) => (a > b ? 1 : 0),
 	greaterThanEq: (a, b) => (a >= b ? 1 : 0),
 	strictEqual: (a, b) => (a === b ? 1 : 0),
-	angle: (x, y) => Math.atan2(x, y),
+	angle: (x, y) => Math.atan2(y, x),
 	len: (x, y) => Math.sqrt(x ** 2 + y ** 2),
 	shl: (a, b) => a << b,
 	shr: (a, b) => a >> b,
