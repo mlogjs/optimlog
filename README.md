@@ -31,8 +31,10 @@ This tool will probably not be very useful, but I think it is great learning exp
 - Detect unreachable code and warn
 - Infer the value of all variables at a certain point in time inside each block.
 - Constant-folding
-- Factorize math expressions to reduce instructions
+- Factorize math expressions to reduce instructions and boolean algebra
 - Combine redundant variables
+- Detect cycles (loops)
+- Move loop independent code outside the loop
 - Try inline jumps (functions) (and optimize, rollback if code ends up being bigger)
 - Repeat until code cannot get any smaller
 - Output optimized code
