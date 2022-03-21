@@ -4,7 +4,7 @@
 
 A Mindustry Logic Preprocessor, Linter and Optimizer.
 
-This tool will probably not be very useful, but I think it is great learning experience to try and attempt to build a code optimizer on a fairly simple assembly-like language.
+This tool will probably not be very useful, but I think it is great learning experience to try and attempt to build a code optimizer for a fairly simple assembly-like language.
 
 ## Lots of issues!
 
