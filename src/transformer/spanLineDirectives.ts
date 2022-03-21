@@ -1,7 +1,7 @@
 import { Context, Token, TokenizedLine } from "../types";
 import { log } from "../utils";
 
-export function normalizeDirectives(
+export function spanLineDirectives(
 	ctx: Context,
 	lines: TokenizedLine[]
 ): TokenizedLine[] {

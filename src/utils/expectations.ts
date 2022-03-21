@@ -1,7 +1,7 @@
 import { Context, Reference, Token, Value } from "../types";
-import { log } from "../utils";
+import { log } from ".";
 
-const referenceRe = /[^"0-9]+[^"]*/;
+const referenceRe = /[^\-"0-9]+[^"]*/;
 const addressRe = /[0-9]+/;
 const stringRe = /"(.*)"/;
 

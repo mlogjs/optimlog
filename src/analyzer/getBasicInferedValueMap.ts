@@ -6,8 +6,9 @@ import {
 	UnresolvedValue,
 	UnresolvedValueMap,
 } from "../types";
+import { isReference } from "../utils/isReference";
 
-export function basicVariableInfer(
+export function getBasicInferedValueMap(
 	_ctx: Context,
 	instructions: Instruction[]
 ): InferedValueMap {
@@ -32,6 +33,7 @@ export function basicVariableInfer(
 	for (const instruction of instructions) {
 		switch (instruction.kind) {
 			case "set":
+				if (instruction.target.name === "@counter") break;
 				add(instruction.target.name, instruction.value);
 				break;
 			case "op":
@@ -43,7 +45,7 @@ export function basicVariableInfer(
 	do {
 		for (const [name, values] of Object.entries(map)) {
 			for (const value of values) {
-				if (typeof value === "object" && value !== null) {
+				if (isReference(value)) {
 					values.splice(values.indexOf(value), 1);
 					for (const value2 of map[value.name]) {
 						if (typeof value2 === "object" && value2?.name === name) continue;

@@ -2,57 +2,51 @@ import {
 	BinaryOpInstruction,
 	BinaryOpMode,
 	binaryOpModes,
-	Instruction,
-	JumpMode,
-	jumpModes,
+	ConditionalJumpMode,
 	Context,
+	Instruction,
+	jumpModes,
 	Token,
 	TokenizedLine,
 	UnaryOpInstruction,
 	UnaryOpMode,
 	unaryOpModes,
+	Location,
 } from "../types";
 import { log } from "../utils";
-import { expectAddress, expectReference, expectValue } from "./expectations";
+import {
+	expectAddress,
+	expectReference,
+	expectValue,
+} from "../utils/expectations";
+import { warnOperandMismatch } from "../utils/warnOperandMismatch";
 
-function warnOperandMismatch(
-	ctx: Context,
-	operands: Token[],
-	min: number,
-	max: number
-) {
-	if (operands.length > max) {
-		log(ctx, "warn", "surplus operands", {
-			start: operands[max - 1].location.start,
-			end: operands[operands.length - 1].location.end,
-		});
-	} else if (operands.length < min) {
-		log(ctx, "warn", "missing operands", {
-			start: operands[0].location.start,
-			end: operands[operands.length - 1].location.end,
-		});
-	}
+function getLocation(tokens: Token[]): Location {
+	return {
+		start: tokens[0].location.start,
+		end: tokens[tokens.length - 1].location.end,
+	};
 }
 
 const mapper: Record<string, (ctx: Context, tokens: Token[]) => Instruction> = {
 	set(ctx, tokens) {
 		warnOperandMismatch(ctx, tokens, 3, 3);
-		const [set, target, value] = tokens;
+		const [_set, target, value] = tokens;
 		return {
 			kind: "set",
 			target: expectReference(ctx, target),
 			value: expectValue(ctx, value),
-			location: set.location,
+			location: getLocation(tokens),
 			inputs: ["value"],
 			outputs: ["target"],
 		};
 	},
 	op(ctx, tokens) {
 		warnOperandMismatch(ctx, tokens, 4, 5);
-		const [op, mode, target, left, right] = tokens;
+		const [_op, mode, target, left, right] = tokens;
 		const common = {
 			kind: "op",
-			location: op.location,
+			location: getLocation(tokens),
 			mode: mode.value,
 			target: expectReference(ctx, target),
 			outputs: ["target"],
@@ -79,17 +73,27 @@ const mapper: Record<string, (ctx: Context, tokens: Token[]) => Instruction> = {
 				inputs: ["operand"],
 			} as UnaryOpInstruction;
 		}
-		throw log(ctx, "error", "expected valid op mode", op.location);
+		throw log(ctx, "error", "expected valid op mode", mode.location);
 	},
 	jump(ctx, tokens) {
-		warnOperandMismatch(ctx, tokens, 5, 5);
+		warnOperandMismatch(ctx, tokens, 3, 5);
 		const [jump, address, mode, left, right] = tokens;
-		if (!jumpModes.includes(mode.value as JumpMode)) {
+		if (!jumpModes.includes(mode.value as ConditionalJumpMode)) {
 			throw log(ctx, "error", "invalid jump mode", mode.location);
+		}
+		if (mode.value === "always") {
+			return {
+				kind: "jump",
+				mode: "always",
+				address: expectAddress(ctx, address),
+				inputs: [],
+				outputs: [],
+				location: getLocation(tokens),
+			};
 		}
 		return {
 			kind: "jump",
-			mode: mode.value as JumpMode,
+			mode: mode.value as ConditionalJumpMode,
 			address: expectAddress(ctx, address),
 			leftOperand: expectValue(ctx, left),
 			rightOperand: expectValue(ctx, right),

@@ -1,11 +1,10 @@
-import { Context, TokenizedLine } from "../types";
-import { getLabels } from "./getLabels";
+import { Context, LabelMap, TokenizedLine } from "../types";
 
 export function unsafeReplaceLabel(
-	ctx: Context,
-	lines: TokenizedLine[]
+	_ctx: Context,
+	lines: TokenizedLine[],
+	labels: LabelMap
 ): TokenizedLine[] {
-	const labels = getLabels(ctx, lines);
 	return lines
 		.map((line) => {
 			return {

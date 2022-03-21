@@ -7,5 +7,5 @@ export * from "./log";
 export * from "./context";
 export * from "./instructions";
 export * from "./jumps";
-export * from "./group";
+export * from "./blocks";
 export * from "./values";

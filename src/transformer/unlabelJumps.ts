@@ -1,20 +1,16 @@
-import { Context, TokenizedLine } from "../types";
+import { Context, LabelMap, TokenizedLine } from "../types";
 import { log } from "../utils";
-import { getLabels } from "./getLabels";
 
 export function unlabelJumps(
 	ctx: Context,
-	lines: TokenizedLine[]
+	lines: TokenizedLine[],
+	labels: LabelMap
 ): TokenizedLine[] {
-	const labels = getLabels(ctx, lines);
 	return lines
 		.map((line) => {
-			const { tokens, location } = line;
+			const { tokens } = line;
 			if (tokens[0]?.value !== "jump") return line;
-			const label = tokens[1].value;
-			if (label === undefined) {
-				log(ctx, "error", `expected address or label`, location);
-			}
+			const label = tokens[1]?.value;
 			if (isFinite(+label)) return line;
 			const jump = labels[label] ?? -1;
 			if (jump < 0) {

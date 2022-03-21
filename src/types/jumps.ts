@@ -1,4 +1,4 @@
-export const jumpModes = [
+export const conditionalJumpModes = [
 	"equal",
 	"notEqual",
 	"lessThan",
@@ -6,7 +6,12 @@ export const jumpModes = [
 	"greaterThan",
 	"greaterThanEq",
 	"strictEqual",
-	"always",
-];
+] as const;
 
-export type JumpMode = typeof jumpModes[number];
+export const alwaysJumpModes = ["always"] as const;
+
+export const jumpModes = [...conditionalJumpModes, ...alwaysJumpModes];
+
+export type AlwaysJumpMode = typeof alwaysJumpModes[number];
+export type ConditionalJumpMode = typeof conditionalJumpModes[number];
+export type JumpMode = AlwaysJumpMode | ConditionalJumpMode;

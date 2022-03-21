@@ -1,11 +1,8 @@
-import { Context, TokenizedLine } from "../types";
+import { Context, LabelMap, TokenizedLine } from "../types";
 import { log } from "../utils";
 
-export function getLabels(
-	ctx: Context,
-	lines: TokenizedLine[]
-): Record<string, number> {
-	const labels: Record<string, number> = {};
+export function getLabelMap(ctx: Context, lines: TokenizedLine[]): LabelMap {
+	const labels: LabelMap = {};
 	let address = 0;
 
 	for (const { tokens } of lines) {

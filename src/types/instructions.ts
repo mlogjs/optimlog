@@ -1,7 +1,10 @@
 import { BinaryOpMode, UnaryOpMode } from "./ops";
 import { Locatable } from "./location";
-import { JumpMode } from "./jumps";
+import { ConditionalJumpMode } from "./jumps";
 import { Reference, Value } from "./values";
+import { AlwaysJumpMode } from ".";
+
+export type LabelMap = Record<string, number>;
 
 export interface BaseInstruction extends Locatable {
 	kind: string;
@@ -37,13 +40,21 @@ export interface BinaryOpInstruction extends BaseInstruction {
 	outputs: ["target"];
 }
 
-export interface JumpInstruction extends BaseInstruction {
+export interface ConditionalJumpInstruction extends BaseInstruction {
 	kind: "jump";
 	address: number;
-	mode: JumpMode;
+	mode: ConditionalJumpMode;
 	leftOperand: Value;
 	rightOperand: Value;
 	inputs: ["leftOperand", "rightOperand"];
+	outputs: [];
+}
+
+export interface AlwaysJumpInstruction extends BaseInstruction {
+	kind: "jump";
+	address: number;
+	mode: AlwaysJumpMode;
+	inputs: [];
 	outputs: [];
 }
 
@@ -51,4 +62,5 @@ export type Instruction =
 	| SetInstruction
 	| UnaryOpInstruction
 	| BinaryOpInstruction
-	| JumpInstruction;
+	| ConditionalJumpInstruction
+	| AlwaysJumpInstruction;
